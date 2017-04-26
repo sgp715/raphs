@@ -95,7 +95,7 @@ fn traverse_graph(graph: &mut HashMap<String, Node>, s: String, t: String) {
 
                 let neighbor_node = graph.get_mut(neighbor).expect("Could not find neighbor");
                 if neighbor_node.red == false {
-                    
+
                     match neighbor_node.parent {
                         Some(_) => (),
                         None => neighbor_node.set_parent(key.to_owned()),
@@ -147,7 +147,7 @@ pub fn find_path(nodes: Vec<&str>, mut graph: HashMap<String, Node>) -> Option<S
             path_string = n + " " + &path_string;
         }
 
-        return Some(path_string)
+        return Some(path_string.trim().to_string())
     }
 
     None
