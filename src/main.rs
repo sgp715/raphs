@@ -15,13 +15,10 @@
 
 
 use std::env;
-use std::io::{BufRead, BufReader, Read, stdin};
+use std::io::{BufRead, BufReader, stdin};
 use std::fs::File;
-use std::collections::HashSet;
-use std::hash::{Hash, Hasher};
 use graph::construct_graph;
 use graph::find_path;
-use graph::Node;
 
 mod graph;
 

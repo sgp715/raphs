@@ -1,9 +1,5 @@
 use std::collections::HashMap;
-use std::collections::VecDeque;
-use std::hash::{Hash, Hasher};
-use std::io::{BufRead, BufReader, Read, stdin,BufWriter};
-use std::fs::File;
-use std::io::prelude::*;
+use std::io::{BufRead, BufReader, Read};
 
 #[derive(Clone, Debug)]
 pub struct Node {
@@ -15,10 +11,6 @@ pub struct Node {
 }
 
 impl Node {
-    fn set_red(&mut self, new_red: bool) {
-        self.red = new_red;
-    }
-
     fn set_parent(&mut self, new_parent: String){
         self.parent = Some(new_parent);
     }
@@ -107,7 +99,7 @@ fn traverse_graph(graph: &mut HashMap<String, Node>, s: String, t: String) {
 
             }
 
-            let node = graph.get_mut(key).expect("Could not find key").red = true;
+            let _ = graph.get_mut(key).expect("Could not find key").red = true;
 
         }
 
@@ -204,11 +196,3 @@ mod find_path_tests {
 
     }
 }
-
-
-
-// impl Hash for Node {
-//     fn hash<H: Hasher>(&self, state: &mut H) {
-//         self.name.hash(state);
-//     }
-// }
