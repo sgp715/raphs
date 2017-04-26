@@ -83,17 +83,24 @@ fn traverse_graph(graph: &mut HashMap<String, Node>, s: String, t: String) {
                 return
             }
 
-            let node = graph.get(key).expect("Could not find key");
-            for neigbor in &node.neighbors {
+            let mut neighbors: Vec<String> = vec![];
+            {
+                let node = graph.get(key).expect("Could not find key");
+                for neighbor in &node.neighbors {
+                    neighbors.push(neighbor.to_string());
+                }
+            }
 
-                let mut neighbor_node = graph.get_mut(neigbor).expect("Could not find neighbor");
+            for neighbor in &neighbors {
+
+                let neighbor_node = graph.get_mut(neighbor).expect("Could not find neighbor");
                 neighbor_node.set_parent(key.to_owned());
-                // match neighbor_node.parent {
-                //     None => neighbor_node.set_parent(key.to_owned()),
-                //     _ => println!("Parent alread exists"),
-                // }
+                match neighbor_node.parent {
+                    Some(_) => (),
+                    None => neighbor_node.set_parent(key.to_owned()),
+                }
 
-                new_q.push(neigbor.to_owned());
+                new_q.push(neighbor.to_owned());
 
             }
 
@@ -109,9 +116,21 @@ pub fn find_path(nodes: Vec<&str>, mut graph: HashMap<String, Node>) -> Option<S
 
     traverse_graph(&mut graph, nodes[0].to_owned(), nodes[1].to_owned());
 
-    // find path by traversing backwards
+    // traverse the graph upward until empty
+    let mut current = &nodes[1].to_owned();
+    let mut path: String = "".to_string();
+    loop {
 
-    None
+        path = path + current;
+        match graph.get(current).expect("Node does not exist").parent {
+            Some(ref p) => current = &p,
+            None => break,
+        }
+
+    }
+
+    Some(path)
+
 }
 
 #[cfg(test)]
