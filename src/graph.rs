@@ -5,7 +5,7 @@ use std::io::{BufRead, BufReader, Read, stdin,BufWriter};
 use std::fs::File;
 use std::io::prelude::*;
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct Node {
 
     neighbors: Vec<String>,
@@ -37,7 +37,7 @@ pub fn construct_graph<R: Read>(reader: R) -> HashMap<String, Node> {
         let first_node = nodes.nth(0).unwrap().to_owned();
 
         let mut neighbors: Vec<String> = vec![];
-        for n in nodes.skip(1) {
+        for n in nodes {
             neighbors.push(n.to_owned());
         }
 
@@ -94,15 +94,21 @@ fn traverse_graph(graph: &mut HashMap<String, Node>, s: String, t: String) {
             for neighbor in &neighbors {
 
                 let neighbor_node = graph.get_mut(neighbor).expect("Could not find neighbor");
-                neighbor_node.set_parent(key.to_owned());
-                match neighbor_node.parent {
-                    Some(_) => (),
-                    None => neighbor_node.set_parent(key.to_owned()),
+                if neighbor_node.red == false {
+
+                    neighbor_node.set_parent(key.to_owned());
+                    match neighbor_node.parent {
+                        Some(_) => (),
+                        None => neighbor_node.set_parent(key.to_owned()),
+                    }
+
                 }
 
                 new_q.push(neighbor.to_owned());
 
             }
+
+            let node = graph.get_mut(key).expect("Could not find key").red = true;
 
         }
 
@@ -116,12 +122,12 @@ pub fn find_path(nodes: Vec<&str>, mut graph: HashMap<String, Node>) -> Option<S
 
     traverse_graph(&mut graph, nodes[0].to_owned(), nodes[1].to_owned());
 
-    // traverse the graph upward until empty
-    let mut current = &nodes[1].to_owned();
-    let mut path: String = "".to_string();
+    // look at the final nodes parents to find the path
+    let mut current = nodes[1];
+    let mut path: Vec<String> = vec![];
     loop {
 
-        path = path + current;
+        path.push(current.to_string());
         match graph.get(current).expect("Node does not exist").parent {
             Some(ref p) => current = &p,
             None => break,
@@ -129,7 +135,23 @@ pub fn find_path(nodes: Vec<&str>, mut graph: HashMap<String, Node>) -> Option<S
 
     }
 
-    Some(path)
+    for (key, val) in &graph {
+        println!("key: {}", key);
+        println!("val: {:?}", val);
+    }
+
+    if path.last().expect("Could not get last element") == nodes[0] {
+
+        let mut path_string = "".to_string();
+
+        for n in path {
+            path_string = n + " " + &path_string;
+        }
+
+        return Some(path_string)
+    }
+
+    None
 
 }
 
