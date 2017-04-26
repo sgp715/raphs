@@ -40,6 +40,7 @@ pub fn construct_graph<R: Read>(reader: R) -> HashMap<String, Node> {
             neighbors.push(n.to_owned());
         }
 
+        // let mut node =  Node { neighbors: neighbors, parent: None, red: false };
         graph.insert(first_node, Node { neighbors: neighbors, parent: None, red: false });
 
     }
@@ -47,7 +48,7 @@ pub fn construct_graph<R: Read>(reader: R) -> HashMap<String, Node> {
     graph
 }
 
-fn traverse_graph(graph: HashMap<String, Node>, s: String, t: String) -> HashMap<String, Node> {
+fn traverse_graph(graph: &mut HashMap<String, Node>, s: String, t: String) {
 
     let mut q: Vec<String> = vec![];
     q.push(s);
@@ -58,20 +59,20 @@ fn traverse_graph(graph: HashMap<String, Node>, s: String, t: String) -> HashMap
         for key in &q {
 
             if key == &t {
-                return graph
+                return
             }
 
             let node = graph.get(key).expect("Could not find key");
             for neigbor in &node.neighbors {
 
-                // let neighbor_node = graph.insert(key).expect("Could not find neighbor");
-                //
+                let mut neighbor_node = graph.get_mut(neigbor).expect("Could not find neighbor");
+                neighbor_node.set_parent(key.to_owned());
                 // match neighbor_node.parent {
-                //     Some(p) => println!("Parent alread exists"),
                 //     None => neighbor_node.set_parent(key.to_owned()),
+                //     _ => println!("Parent alread exists"),
                 // }
 
-                // new_q.push(neigbor.to_owned());
+                new_q.push(neigbor.to_owned());
 
             }
 
@@ -81,13 +82,11 @@ fn traverse_graph(graph: HashMap<String, Node>, s: String, t: String) -> HashMap
 
     }
 
-    graph
-
 }
 
-pub fn find_path(nodes: Vec<&str>, graph: HashMap<String, Node>) -> Option<String> {
+pub fn find_path(nodes: Vec<&str>, mut graph: HashMap<String, Node>) -> Option<String> {
 
-    let modified_graph = traverse_graph(graph, nodes[0].to_owned(), nodes[1].to_owned());
+    traverse_graph(&mut graph, nodes[0].to_owned(), nodes[1].to_owned());
 
     // find path by traversing backwards
 
