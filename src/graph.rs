@@ -1,43 +1,48 @@
-use std::collections::HashSet;
+use std::collections::HashMap;
 use std::hash::{Hash, Hasher};
 use std::io::{BufRead, BufReader, Read, stdin};
 
 
-#[derive(PartialEq, Eq)]
+#[derive(Clone)]
 pub struct Node {
-    name: String,
-    neighbors: HashSet<String>,
+
+    neighbors: Vec<String>,
+    parent: Option<String>,
+    red: bool,
+
 }
 
 
-pub fn construct_graph<R: Read>(reader: R) -> HashSet<Node> {
+pub fn construct_graph<R: Read>(reader: R) -> HashMap<String, Node> {
 
-    let mut graph: HashSet<Node> = HashSet::new();
+    let mut graph: HashMap<String, Node> = HashMap::new();
     let mut lines = BufReader::new(reader).lines();
 
     while let Some(Ok(line)) = lines.next() {
+
         let mut nodes = line.split_whitespace();
 
-        let mut neighbors = HashSet::new();
         let first_node = nodes.nth(0).unwrap().to_owned();
 
+        let mut neighbors: Vec<String> = vec![];
         for n in nodes.skip(1) {
-            neighbors.insert(n.to_owned());
+            neighbors.push(n.to_owned());
         }
 
-        graph.insert(Node { name: first_node, neighbors: neighbors });
+        graph.insert(first_node, Node { neighbors: neighbors, parent: None, red: false });
+
     }
 
     graph
 }
 
 
-pub fn find_path(nodes: Vec<&str>, graph: &HashSet<Node>) -> Option<String> {
+pub fn find_path(nodes: Vec<&str>, graph: HashMap<String, Node>) -> Option<String> {
     None
 }
 
-impl Hash for Node {
-    fn hash<H: Hasher>(&self, state: &mut H) {
-        self.name.hash(state);
-    }
-}
+// impl Hash for Node {
+//     fn hash<H: Hasher>(&self, state: &mut H) {
+//         self.name.hash(state);
+//     }
+// }

@@ -36,7 +36,7 @@ fn main() {
     while let Some(Ok(line)) = lines.next() {
         let nodes: Vec<&str> = line.split_whitespace().collect();
 
-        match find_path(nodes, &graph) {
+        match find_path(nodes, graph.clone()) {
             Some(path) => println!("{}", path),
             None => println!("No path exists"),
         }
