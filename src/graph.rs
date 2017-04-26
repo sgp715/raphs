@@ -1,4 +1,5 @@
 use std::collections::HashMap;
+use std::collections::VecDeque;
 use std::hash::{Hash, Hasher};
 use std::io::{BufRead, BufReader, Read, stdin,BufWriter};
 use std::fs::File;
@@ -11,6 +12,16 @@ pub struct Node {
     parent: Option<String>,
     red: bool,
 
+}
+
+impl Node {
+    fn set_red(&mut self, new_red: bool) {
+        self.red = new_red;
+    }
+
+    fn set_parent(&mut self, new_parent: String){
+        self.parent = Some(new_parent);
+    }
 }
 
 
@@ -57,8 +68,50 @@ mod construct_graph_tests {
     }*/
 }
 
+fn traverse_graph(graph: HashMap<String, Node>, s: String, t: String) -> HashMap<String, Node> {
+
+    let mut q: Vec<String> = vec![];
+    q.push(s);
+
+    while q.len() != 0 {
+
+        let mut new_q: Vec<String> = vec![];
+        for key in &q {
+
+            if key == &t {
+                return graph
+            }
+
+            let node = graph.get(key).expect("Could not find key");
+            for neigbor in &node.neighbors {
+
+                // let neighbor_node = graph.insert(key).expect("Could not find neighbor");
+                //
+                // match neighbor_node.parent {
+                //     Some(p) => println!("Parent alread exists"),
+                //     None => neighbor_node.set_parent(key.to_owned()),
+                // }
+
+                // new_q.push(neigbor.to_owned());
+
+            }
+
+        }
+
+        q = new_q;
+
+    }
+
+    graph
+
+}
 
 pub fn find_path(nodes: Vec<&str>, graph: HashMap<String, Node>) -> Option<String> {
+
+    let modified_graph = traverse_graph(graph, nodes[0].to_owned(), nodes[1].to_owned());
+
+    // find path by traversing backwards
+
     None
 }
 
