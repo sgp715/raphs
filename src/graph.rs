@@ -95,8 +95,7 @@ fn traverse_graph(graph: &mut HashMap<String, Node>, s: String, t: String) {
 
                 let neighbor_node = graph.get_mut(neighbor).expect("Could not find neighbor");
                 if neighbor_node.red == false {
-
-                    neighbor_node.set_parent(key.to_owned());
+                    
                     match neighbor_node.parent {
                         Some(_) => (),
                         None => neighbor_node.set_parent(key.to_owned()),
