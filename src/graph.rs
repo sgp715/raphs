@@ -126,10 +126,10 @@ pub fn find_path(nodes: Vec<&str>, mut graph: HashMap<String, Node>) -> Option<S
 
     }
 
-    for (key, val) in &graph {
+    /*for (key, val) in &graph {
         println!("key: {}", key);
         println!("val: {:?}", val);
-    }
+    }*/
 
     if path.last().expect("Could not get last element") == nodes[0] {
 
